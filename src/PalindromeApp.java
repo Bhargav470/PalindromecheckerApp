@@ -1,47 +1,49 @@
-import java.util.LinkedList;
-import java.util.Queue;
-import java.util.Stack;
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * Project: Palindrome Pro
- * Use Case: UC6 - Queue (FIFO) vs Stack (LIFO) Comparison
+ * Use Case: UC7 - Deque-Based Optimized Palindrome Checker
  */
 public class PalindromeApp {
 
     public static void main(String[] args) {
         // UC1: Branding
-        System.out.println("=== Palindrome Pro: UC6 Mode ===");
+        System.out.println("=== Palindrome Pro: UC7 Mode ===");
 
-        String input = "rotator";
+        String input = "divider";
 
-        // UC6 Concepts: Queue (FIFO) and Stack (LIFO)
-        // Note: LinkedList is used to implement the Queue interface in Java
-        Queue<Character> queue = new LinkedList<>();
-        Stack<Character> stack = new Stack<>();
+        /*
+         * UC7 Concept: Deque (Double Ended Queue)
+         * We use ArrayDeque for better performance than LinkedList.
+         */
+        Deque<Character> deque = new ArrayDeque<>();
 
-        // 1. Enqueue and Push: Load both data structures
+        // 1. Insert characters into the deque
         for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-            queue.add(c);  // Enqueue (adds to back)
-            stack.push(c); // Push (adds to top)
+            deque.addLast(input.charAt(i));
         }
 
         boolean isPalindrome = true;
 
-        // 2. Comparison Logic: Dequeue vs Pop
-        // Queue.poll() returns the FIRST char added.
-        // Stack.pop() returns the LAST char added.
-        while (!queue.isEmpty()) {
-            char fromQueue = queue.poll();
-            char fromStack = stack.pop();
+        /*
+         * 2. Comparison Logic: Remove First & Last
+         * While there is more than one character, compare the ends.
+         */
+        while (deque.size() > 1) {
+            char first = deque.removeFirst();
+            char last = deque.removeLast();
 
-            if (fromQueue != fromStack) {
+            if (first != last) {
                 isPalindrome = false;
                 break;
             }
         }
 
-        System.out.println("Input: " + input);
-        System.out.println("Result: " + (isPalindrome ? "It matches! Palindrome confirmed." : "Mismatch found."));
+        System.out.println("Input word: " + input);
+        System.out.println("Result: " + (isPalindrome ? "Confirmed Palindrome" : "Not a Palindrome"));
+
+        // UC7 Concept: Optimized Data Handling
+        System.out.println("Status: Comparison finished with " + deque.size() + " characters remaining.");
     }
 }
