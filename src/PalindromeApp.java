@@ -1,33 +1,47 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC1 - Application Entry & Welcome Message
+ * Use Case: UC13 - Performance Comparison (Benchmarking)
  */
 public class PalindromeApp {
 
-    // Application Metadata (Constants)
-    private static final String APP_NAME = "Palindrome Professional Suite";
-    private static final String VERSION = "1.0.0-UC1";
-
-    /**
-     * Entry point of the application.
-     * UC1: Displays branding and versioning upon startup.
-     */
     public static void main(String[] args) {
-        // Display UC1 Requirements
-        displayWelcomeMessage();
+        System.out.println("=== Palindrome Pro: UC13 Performance Comparison ===");
 
-        // Placeholder for future Use Cases (UC2: Navigation)
-        System.out.println("\n[System]: Initialization complete. Ready for UC2 implementation.");
+        // Create a massive string to make the performance difference noticeable
+        String base = "racecar";
+        String largeInput = base.repeat(10000);
+
+        System.out.println("Testing input size: " + largeInput.length() + " characters.\n");
+
+        // 1. Benchmark: String Reversal (UC3 style)
+        long start = System.nanoTime();
+        checkByReversal(largeInput);
+        long end = System.nanoTime();
+        System.out.println("String Reversal: " + (end - start) / 1000000.0 + " ms");
+
+        // 2. Benchmark: Two-Pointer (UC4 style)
+        start = System.nanoTime();
+        checkByPointer(largeInput);
+        end = System.nanoTime();
+        System.out.println("Two-Pointer:    " + (end - start) / 1000000.0 + " ms");
+
+        // 3. Benchmark: Recursion (UC9 style)
+        // Warning: Recursion on very large strings can cause StackOverflowError
+        System.out.println("Recursion:      Skipped (Risk of StackOverflow on 70k chars)");
     }
 
-    /**
-     * Logic for UC1: Console Output
-     */
-    private static void displayWelcomeMessage() {
-        System.out.println("========================================");
-        System.out.println("    " + APP_NAME);
-        System.out.println("    Version: " + VERSION);
-        System.out.println("========================================");
-        System.out.println("System starting...");
+    private static void checkByReversal(String s) {
+        String reversed = "";
+        for (int i = s.length() - 1; i >= 0; i--) {
+            reversed += s.charAt(i); // String immutability makes this very slow!
+        }
+    }
+
+    private static boolean checkByPointer(String s) {
+        int left = 0, right = s.length() - 1;
+        while (left < right) {
+            if (s.charAt(left++) != s.charAt(right--)) return false;
+        }
+        return true;
     }
 }
