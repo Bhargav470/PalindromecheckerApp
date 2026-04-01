@@ -1,74 +1,43 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC8 - Singly Linked List (In-Place Reversal)
+ * Use Case: UC9 - Recursive Palindrome Checker
  */
 public class PalindromeApp {
 
-    // Helper Node class for the Singly Linked List
-    static class Node {
-        char data;
-        Node next;
-        Node(char data) { this.data = data; }
-    }
-
     public static void main(String[] args) {
-        System.out.println("=== Palindrome Pro: UC8 Mode (Linked List) ===");
+        // UC1: Branding
+        System.out.println("=== Palindrome Pro: UC9 Mode (Recursion) ===");
 
-        String input = "radar";
-        Node head = buildLinkedList(input);
+        String input = "kayak";
 
-        if (isPalindrome(head)) {
-            System.out.println("Result: '" + input + "' is a linked list palindrome.");
+        // UC9 Flow: Initial recursive call
+        if (isPalindrome(input)) {
+            System.out.println("Result: '" + input + "' is a recursive palindrome!");
         } else {
             System.out.println("Result: Not a palindrome.");
         }
     }
 
-    private static boolean isPalindrome(Node head) {
-        if (head == null || head.next == null) return true;
-
-        // 1. UC8 Concept: Fast and Slow Pointers to find the middle
-        Node slow = head;
-        Node fast = head;
-        while (fast != null && fast.next != null) {
-            slow = slow.next;
-            fast = fast.next.next;
+    /**
+     * UC9 Concept: Recursive Method
+     * This method calls itself with a smaller substring until it hits the base case.
+     */
+    public static boolean isPalindrome(String s) {
+        // UC9 Concept: Base Condition 1
+        // An empty string or single character is always a palindrome.
+        if (s.length() <= 1) {
+            return true;
         }
 
-        // 2. UC8 Concept: In-Place Reversal of the second half
-        Node secondHalf = reverseList(slow);
-        Node firstHalf = head;
-
-        // 3. Compare the two halves
-        Node temp = secondHalf; // Keep track to restore list if needed
-        while (secondHalf != null) {
-            if (firstHalf.data != secondHalf.data) return false;
-            firstHalf = firstHalf.next;
-            secondHalf = secondHalf.next;
+        // UC9 Concept: Recursive Step
+        // 1. Check if the first and last characters match.
+        if (s.charAt(0) == s.charAt(s.length() - 1)) {
+            // 2. If they match, call the method again with the "middle" substring.
+            // Example: "kayak" -> calls isPalindrome("aya")
+            return isPalindrome(s.substring(1, s.length() - 1));
         }
-        return true;
-    }
 
-    private static Node reverseList(Node head) {
-        Node prev = null;
-        Node curr = head;
-        while (curr != null) {
-            Node nextNode = curr.next;
-            curr.next = prev;
-            prev = curr;
-            curr = nextNode;
-        }
-        return prev;
-    }
-
-    private static Node buildLinkedList(String s) {
-        if (s.isEmpty()) return null;
-        Node head = new Node(s.charAt(0));
-        Node current = head;
-        for (int i = 1; i < s.length(); i++) {
-            current.next = new Node(s.charAt(i));
-            current = current.next;
-        }
-        return head;
+        // If characters don't match, it's not a palindrome.
+        return false;
     }
 }
