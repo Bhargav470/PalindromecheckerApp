@@ -1,72 +1,47 @@
-import java.util.*;
-
 /**
  * Project: Palindrome Pro
- * Use Case: UC12 - Strategy Pattern (Advanced Design Patterns)
+ * Use Case: UC13 - Performance Comparison (Benchmarking)
  */
+public class PalindromeApp {
 
-// 1. The Strategy Interface
-interface PalindromeStrategy {
-    boolean isValid(String input);
-}
+    public static void main(String[] args) {
+        System.out.println("=== Palindrome Pro: UC13 Performance Comparison ===");
 
-// 2. Implementation A: Stack Strategy (LIFO)
-class StackStrategy implements PalindromeStrategy {
-    @Override
-    public boolean isValid(String input) {
-        String clean = input.toLowerCase().replaceAll("[^a-z0-9]", "");
-        Stack<Character> stack = new Stack<>();
-        for (char c : clean.toCharArray()) stack.push(c);
+        // Create a massive string to make the performance difference noticeable
+        String base = "racecar";
+        String largeInput = base.repeat(10000);
 
-        StringBuilder reversed = new StringBuilder();
-        while (!stack.isEmpty()) reversed.append(stack.pop());
+        System.out.println("Testing input size: " + largeInput.length() + " characters.\n");
 
-        return clean.equals(reversed.toString());
+        // 1. Benchmark: String Reversal (UC3 style)
+        long start = System.nanoTime();
+        checkByReversal(largeInput);
+        long end = System.nanoTime();
+        System.out.println("String Reversal: " + (end - start) / 1000000.0 + " ms");
+
+        // 2. Benchmark: Two-Pointer (UC4 style)
+        start = System.nanoTime();
+        checkByPointer(largeInput);
+        end = System.nanoTime();
+        System.out.println("Two-Pointer:    " + (end - start) / 1000000.0 + " ms");
+
+        // 3. Benchmark: Recursion (UC9 style)
+        // Warning: Recursion on very large strings can cause StackOverflowError
+        System.out.println("Recursion:      Skipped (Risk of StackOverflow on 70k chars)");
     }
-}
 
-// 3. Implementation B: Two-Pointer Strategy (Optimized)
-class PointerStrategy implements PalindromeStrategy {
-    @Override
-    public boolean isValid(String input) {
-        String clean = input.toLowerCase().replaceAll("[^a-z0-9]", "");
-        int left = 0, right = clean.length() - 1;
+    private static void checkByReversal(String s) {
+        String reversed = "";
+        for (int i = s.length() - 1; i >= 0; i--) {
+            reversed += s.charAt(i); // String immutability makes this very slow!
+        }
+    }
+
+    private static boolean checkByPointer(String s) {
+        int left = 0, right = s.length() - 1;
         while (left < right) {
-            if (clean.charAt(left++) != clean.charAt(right--)) return false;
+            if (s.charAt(left++) != s.charAt(right--)) return false;
         }
         return true;
-    }
-}
-
-// 4. The Context Class (The "Service" that uses a strategy)
-class PalindromeContext {
-    private PalindromeStrategy strategy;
-
-    // Inject the strategy at runtime
-    public void setStrategy(PalindromeStrategy strategy) {
-        this.strategy = strategy;
-    }
-
-    public boolean executeCheck(String text) {
-        if (strategy == null) throw new IllegalStateException("Strategy not set!");
-        return strategy.isValid(text);
-    }
-}
-
-// --- Main Application ---
-public class PalindromeApp {
-    public static void main(String[] args) {
-        System.out.println("=== Palindrome Pro: UC12 Strategy Pattern ===");
-
-        PalindromeContext context = new PalindromeContext();
-        String testWord = "A man, a plan, a canal: Panama";
-
-        // Scenario 1: Use Stack Strategy
-        context.setStrategy(new StackStrategy());
-        System.out.println("Using Stack: " + context.executeCheck(testWord));
-
-        // Scenario 2: Switch to Pointer Strategy dynamically
-        context.setStrategy(new PointerStrategy());
-        System.out.println("Using Pointer: " + context.executeCheck(testWord));
     }
 }
