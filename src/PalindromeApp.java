@@ -1,29 +1,37 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC3 - Palindrome Check Using String Reverse (Manual Loop)
+ * Use Case: UC4 - Character Array & Two-Pointer Technique
  */
 public class PalindromeApp {
 
     public static void main(String[] args) {
         // UC1: Branding
-        System.out.println("=== Palindrome Pro: UC3 Mode ===");
+        System.out.println("=== Palindrome Pro: UC4 Mode ===");
 
-        // UC2: Data Setup
-        String original = "level";
-        StringBuilder reversed = new StringBuilder(); // Initialize an empty string to hold the result
+        // Data Setup
+        String input = "deified";
 
-        for (int i = original.length() - 1; i >= 0; i--) {
-            // String Concatenation: Building the string character by character
-            reversed.append(original.charAt(i));
+        char[] charArray = input.toCharArray();
+
+        int left = 0;
+        int right = charArray.length - 1;
+        boolean isPalindrome = true;
+
+        while (left < right) {
+            // Compare characters at the current pointers
+            if (charArray[left] != charArray[right]) {
+                isPalindrome = false;
+                break; // Exit loop early if a mismatch is found
+            }
+            // Move pointers closer to the middle
+            left++;
+            right--;
         }
 
-        System.out.println("Original: " + original);
-        System.out.println("Reversed: " + reversed);
+        System.out.println("Input String: " + input);
+        System.out.println("Result: " + (isPalindrome ? "It is a palindrome!" : "Not a palindrome."));
 
-        if (original.equalsIgnoreCase(reversed.toString())) {
-            System.out.println("Result: The strings match. It's a palindrome!");
-        } else {
-            System.out.println("Result: The strings do not match.");
-        }
+        // UC4 Concept: Time Complexity
+        System.out.println("Optimization: Only " + (input.length() / 2) + " comparisons made.");
     }
 }
