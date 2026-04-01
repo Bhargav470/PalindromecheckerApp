@@ -1,39 +1,54 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC10 - Case-Insensitive & Space-Ignored (Preprocessing)
+ * Use Case: UC11 - Object-Oriented Palindrome Service (Encapsulation)
  */
-public class PalindromeApp {
 
-    public static void main(String[] args) {
-        // UC1: Branding
-        System.out.println("=== Palindrome Pro: UC10 Mode (Preprocessing) ===");
+// --- The Service Provider ---
+class PalindromeService {
 
-        // A complex phrase that is a palindrome but would fail UC2-UC9 without cleaning
-        String rawInput = "A man, a plan, a canal: Panama";
+    /**
+     * UC11 Concept: Encapsulation
+     * The logic is "hidden" inside this method. The user of this class
+     * doesn't need to know IF it uses a Stack, Array, or Deque.
+     */
+    public boolean check(String input) {
+        if (input == null) return false;
 
-        /**
-         * UC10 Concept: String Preprocessing
-         * 1. toLowerCase(): Standardizes 'A' and 'a'.
-         * 2. replaceAll(): Uses Regex to remove everything that isn't a letter or number.
-         */
-        String cleanInput = rawInput.toLowerCase().replaceAll("[^a-z0-9]", "");
+        // Internal Preprocessing (UC10 logic)
+        String clean = sanitize(input);
 
-        System.out.println("Raw Input:   " + rawInput);
-        System.out.println("Cleaned:     " + cleanInput);
-
-        // Applying the Two-Pointer logic from UC4 for efficiency
-        if (checkPalindrome(cleanInput)) {
-            System.out.println("Result: Success! It is a palindrome.");
-        } else {
-            System.out.println("Result: Failed.");
-        }
+        // Internal Logic (Using Two-Pointer for performance)
+        return validate(clean);
     }
 
-    private static boolean checkPalindrome(String str) {
-        int left = 0, right = str.length() - 1;
+    private String sanitize(String s) {
+        return s.toLowerCase().replaceAll("[^a-z0-9]", "");
+    }
+
+    private boolean validate(String s) {
+        int left = 0, right = s.length() - 1;
         while (left < right) {
-            if (str.charAt(left++) != str.charAt(right--)) return false;
+            if (s.charAt(left++) != s.charAt(right--)) return false;
         }
         return true;
+    }
+}
+
+// --- The Application Entry Point ---
+public class PalindromeApp {
+    public static void main(String[] args) {
+        System.out.println("=== Palindrome Pro: UC11 Mode (OOP) ===");
+
+        // UC11 Concept: Object Instantiation
+        // We create an 'instance' of the service to use its capabilities.
+        PalindromeService service = new PalindromeService();
+
+        String testPhrase = "No 'x' in Nixon";
+
+        // UC11 Concept: Method Invocation
+        boolean result = service.check(testPhrase);
+
+        System.out.println("Testing: " + testPhrase);
+        System.out.println("Result: " + (result ? "Verified Palindrome" : "Invalid"));
     }
 }
