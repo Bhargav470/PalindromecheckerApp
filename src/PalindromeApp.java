@@ -1,54 +1,72 @@
+import java.util.*;
+
 /**
  * Project: Palindrome Pro
- * Use Case: UC11 - Object-Oriented Palindrome Service (Encapsulation)
+ * Use Case: UC12 - Strategy Pattern (Advanced Design Patterns)
  */
 
-// --- The Service Provider ---
-class PalindromeService {
+// 1. The Strategy Interface
+interface PalindromeStrategy {
+    boolean isValid(String input);
+}
 
-    /**
-     * UC11 Concept: Encapsulation
-     * The logic is "hidden" inside this method. The user of this class
-     * doesn't need to know IF it uses a Stack, Array, or Deque.
-     */
-    public boolean check(String input) {
-        if (input == null) return false;
+// 2. Implementation A: Stack Strategy (LIFO)
+class StackStrategy implements PalindromeStrategy {
+    @Override
+    public boolean isValid(String input) {
+        String clean = input.toLowerCase().replaceAll("[^a-z0-9]", "");
+        Stack<Character> stack = new Stack<>();
+        for (char c : clean.toCharArray()) stack.push(c);
 
-        // Internal Preprocessing (UC10 logic)
-        String clean = sanitize(input);
+        StringBuilder reversed = new StringBuilder();
+        while (!stack.isEmpty()) reversed.append(stack.pop());
 
-        // Internal Logic (Using Two-Pointer for performance)
-        return validate(clean);
+        return clean.equals(reversed.toString());
     }
+}
 
-    private String sanitize(String s) {
-        return s.toLowerCase().replaceAll("[^a-z0-9]", "");
-    }
-
-    private boolean validate(String s) {
-        int left = 0, right = s.length() - 1;
+// 3. Implementation B: Two-Pointer Strategy (Optimized)
+class PointerStrategy implements PalindromeStrategy {
+    @Override
+    public boolean isValid(String input) {
+        String clean = input.toLowerCase().replaceAll("[^a-z0-9]", "");
+        int left = 0, right = clean.length() - 1;
         while (left < right) {
-            if (s.charAt(left++) != s.charAt(right--)) return false;
+            if (clean.charAt(left++) != clean.charAt(right--)) return false;
         }
         return true;
     }
 }
 
-// --- The Application Entry Point ---
+// 4. The Context Class (The "Service" that uses a strategy)
+class PalindromeContext {
+    private PalindromeStrategy strategy;
+
+    // Inject the strategy at runtime
+    public void setStrategy(PalindromeStrategy strategy) {
+        this.strategy = strategy;
+    }
+
+    public boolean executeCheck(String text) {
+        if (strategy == null) throw new IllegalStateException("Strategy not set!");
+        return strategy.isValid(text);
+    }
+}
+
+// --- Main Application ---
 public class PalindromeApp {
     public static void main(String[] args) {
-        System.out.println("=== Palindrome Pro: UC11 Mode (OOP) ===");
+        System.out.println("=== Palindrome Pro: UC12 Strategy Pattern ===");
 
-        // UC11 Concept: Object Instantiation
-        // We create an 'instance' of the service to use its capabilities.
-        PalindromeService service = new PalindromeService();
+        PalindromeContext context = new PalindromeContext();
+        String testWord = "A man, a plan, a canal: Panama";
 
-        String testPhrase = "No 'x' in Nixon";
+        // Scenario 1: Use Stack Strategy
+        context.setStrategy(new StackStrategy());
+        System.out.println("Using Stack: " + context.executeCheck(testWord));
 
-        // UC11 Concept: Method Invocation
-        boolean result = service.check(testPhrase);
-
-        System.out.println("Testing: " + testPhrase);
-        System.out.println("Result: " + (result ? "Verified Palindrome" : "Invalid"));
+        // Scenario 2: Switch to Pointer Strategy dynamically
+        context.setStrategy(new PointerStrategy());
+        System.out.println("Using Pointer: " + context.executeCheck(testWord));
     }
 }
