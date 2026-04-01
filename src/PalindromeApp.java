@@ -1,33 +1,30 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC1 - Application Entry & Welcome Message
+ * Use Case: UC2 - Print a Hardcoded Palindrome Result
  */
 public class PalindromeApp {
 
-    // Application Metadata (Constants)
-    private static final String APP_NAME = "Palindrome Professional Suite";
-    private static final String VERSION = "1.0.0-UC1";
-
-    /**
-     * Entry point of the application.
-     * UC1: Displays branding and versioning upon startup.
-     */
     public static void main(String[] args) {
-        // Display UC1 Requirements
-        displayWelcomeMessage();
+        // UC1: Welcome Message
+        System.out.println("=== Palindrome Pro: UC2 Mode ===");
 
-        // Placeholder for future Use Cases (UC2: Navigation)
-        System.out.println("\n[System]: Initialization complete. Ready for UC2 implementation.");
-    }
+        // UC2: Hardcoded String Logic
+        // We use a String literal "madam" as our test case
+        String testWord = "madam";
 
-    /**
-     * Logic for UC1: Console Output
-     */
-    private static void displayWelcomeMessage() {
-        System.out.println("========================================");
-        System.out.println("    " + APP_NAME);
-        System.out.println("    Version: " + VERSION);
-        System.out.println("========================================");
-        System.out.println("System starting...");
+        // Logic to check palindrome: Reverse the string
+        // We use StringBuilder for an easy reverse() method
+        String reversedWord = new StringBuilder(testWord).reverse().toString();
+
+        System.out.println("Testing word: " + testWord);
+
+        // UC2: Conditional Statement (if-else)
+        if (testWord.equals(reversedWord)) {
+            System.out.println("Result: Success! '" + testWord + "' is a palindrome.");
+        } else {
+            System.out.println("Result: Fail. '" + testWord + "' is not a palindrome.");
+        }
+
+        System.out.println("Program execution finished.");
     }
 }
