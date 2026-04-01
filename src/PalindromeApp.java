@@ -1,43 +1,39 @@
 /**
  * Project: Palindrome Pro
- * Use Case: UC9 - Recursive Palindrome Checker
+ * Use Case: UC10 - Case-Insensitive & Space-Ignored (Preprocessing)
  */
 public class PalindromeApp {
 
     public static void main(String[] args) {
         // UC1: Branding
-        System.out.println("=== Palindrome Pro: UC9 Mode (Recursion) ===");
+        System.out.println("=== Palindrome Pro: UC10 Mode (Preprocessing) ===");
 
-        String input = "kayak";
+        // A complex phrase that is a palindrome but would fail UC2-UC9 without cleaning
+        String rawInput = "A man, a plan, a canal: Panama";
 
-        // UC9 Flow: Initial recursive call
-        if (isPalindrome(input)) {
-            System.out.println("Result: '" + input + "' is a recursive palindrome!");
+        /**
+         * UC10 Concept: String Preprocessing
+         * 1. toLowerCase(): Standardizes 'A' and 'a'.
+         * 2. replaceAll(): Uses Regex to remove everything that isn't a letter or number.
+         */
+        String cleanInput = rawInput.toLowerCase().replaceAll("[^a-z0-9]", "");
+
+        System.out.println("Raw Input:   " + rawInput);
+        System.out.println("Cleaned:     " + cleanInput);
+
+        // Applying the Two-Pointer logic from UC4 for efficiency
+        if (checkPalindrome(cleanInput)) {
+            System.out.println("Result: Success! It is a palindrome.");
         } else {
-            System.out.println("Result: Not a palindrome.");
+            System.out.println("Result: Failed.");
         }
     }
 
-    /**
-     * UC9 Concept: Recursive Method
-     * This method calls itself with a smaller substring until it hits the base case.
-     */
-    public static boolean isPalindrome(String s) {
-        // UC9 Concept: Base Condition 1
-        // An empty string or single character is always a palindrome.
-        if (s.length() <= 1) {
-            return true;
+    private static boolean checkPalindrome(String str) {
+        int left = 0, right = str.length() - 1;
+        while (left < right) {
+            if (str.charAt(left++) != str.charAt(right--)) return false;
         }
-
-        // UC9 Concept: Recursive Step
-        // 1. Check if the first and last characters match.
-        if (s.charAt(0) == s.charAt(s.length() - 1)) {
-            // 2. If they match, call the method again with the "middle" substring.
-            // Example: "kayak" -> calls isPalindrome("aya")
-            return isPalindrome(s.substring(1, s.length() - 1));
-        }
-
-        // If characters don't match, it's not a palindrome.
-        return false;
+        return true;
     }
 }
